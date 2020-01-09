@@ -60,7 +60,7 @@ const TabScreen = createMaterialTopTabNavigator(
  
 
 //making a StackNavigator to export as default
-const App = createStackNavigator({
+const MainScreen = createStackNavigator({
   TabScreen: {
     screen: TabScreen,
     navigationOptions: {
@@ -91,7 +91,7 @@ const App = createStackNavigator({
 const MainDrawerNavigator = createDrawerNavigator(
   {
     Home: {
-      screen: App,
+      screen: MainScreen,
     },
     tab2: {
       screen: tab2,
