@@ -10,7 +10,8 @@ import React from 'react';
 //} from 'react-navigation';
  
 //For React Navigation 4+
-import {createAppContainer} from 'react-navigation';
+import { ActivityIndicator , AsyncStorage,Text ,TextInput,TouchableOpacity , StatusBar } from 'react-native';
+import { createAppContainer,createSwitchNavigator} from 'react-navigation';
 import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
 import {createStackNavigator} from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
@@ -24,10 +25,13 @@ import navbar from './pages/navbar';
 import register from './pages/register';
 
 import LeftSideBar from "./pages/leftside";
+import { View, Button } from 'native-base';
 //Making TabNavigator which will be called in App StackNavigator
 //we can directly export the TabNavigator also but header will not be visible
 //as header comes only when we put anything into StackNavigator and then export
  
+
+
 const TabScreen = createMaterialTopTabNavigator(
   {
     Home: { screen: homepage },
@@ -68,11 +72,12 @@ const MainScreen = createStackNavigator({
         backgroundColor: '#006FB0',
       },
       headerTintColor: '#FFFFFF',
-      title: 'Drawer + Stack Nav',
+      title: 'IEL MEMBER',
     },
   },
   
 });
+
 
 // const MyDrawerNavigator = createDrawerNavigator({
 //   Home: {
@@ -86,8 +91,6 @@ const MainScreen = createStackNavigator({
 // const MyApp = createAppContainer(MyDrawerNavigator);
 
 
-
-
 const MainDrawerNavigator = createDrawerNavigator(
   {
     Home: {
@@ -96,9 +99,7 @@ const MainDrawerNavigator = createDrawerNavigator(
     tab2: {
       screen: tab2,
     },
-    register: {
-      screen: register,
-    },
+    
   },
   {
     drawerOpenRoute: 'DrawerOpen',
@@ -113,4 +114,48 @@ const MainDrawerNavigator = createDrawerNavigator(
 
 
 
-export default createAppContainer(MainDrawerNavigator);
+class AuthScreen  extends React.Component {
+  constructor(props){
+    super(props);
+    this._loadData();
+  }
+  render(){
+    return(
+      <View>
+        <Text>
+          กรุณา Login
+          <ActivityIndicator/>
+          <StatusBar barStyle="default"/>
+        </Text>
+      </View>
+    );
+  }
+  _signIn = async () =>{
+    alert('login');
+    
+      try {
+        await AsyncStorage.setItem('logged', '1');
+      } catch (error) {
+        // Error saving data
+      }
+  }
+
+  _loadData = async () => {
+    const logged = await AsyncStorage.getItem('logged');
+    this.props.navigation.navigate(logged !== '1' ? 'Auth' : 'App' )
+  }
+}
+
+
+
+const MainAuth =  createStackNavigator(
+{
+  AuthLoading : AuthScreen,
+  Auth : register,
+  App : MainScreen,
+},{
+  initialRouteName : 'AuthLoading'
+}
+);
+
+export default createAppContainer(MainAuth);
