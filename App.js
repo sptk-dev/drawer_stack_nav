@@ -65,6 +65,7 @@ const TabScreen = createMaterialTopTabNavigator(
 
 //making a StackNavigator to export as default
 const MainScreen = createStackNavigator({
+  
   TabScreen: {
     screen: TabScreen,
     navigationOptions: {
@@ -74,7 +75,7 @@ const MainScreen = createStackNavigator({
       headerTintColor: '#FFFFFF',
       title: 'IEL MEMBER',
     },
-  },
+  }, headerMode: 'screen', 
   
 });
 
@@ -127,14 +128,17 @@ class AuthScreen  extends React.Component {
           <ActivityIndicator/>
           <StatusBar barStyle="default"/>
         </Text>
+        <Text onPress={this._signIn}>
+          Login
+          </Text>
       </View>
     );
   }
   _signIn = async () =>{
     alert('login');
-    
       try {
         await AsyncStorage.setItem('logged', '1');
+        this.props.navigation.navigate('App');
       } catch (error) {
         // Error saving data
       }
@@ -146,13 +150,45 @@ class AuthScreen  extends React.Component {
   }
 }
 
+const stackN = createStackNavigator({
+  Screen1 : {
+    screen: MainDrawerNavigator,
+    navigationOptions: {
+      header: null,
+    }
+  },
+  Home : {
+    screen: tab2,
+    navigationOptions: ({navigation}) => ({
+      title: 'Home',
+      headerStyle: styles.headerStyle,
+      headerTitle: <Text>Home</Text>,
+      headerLeft : null,
+      headerRight: null,
+    })
+  }, 
+}, {headerMode: 'none'})
+
+
 
 
 const MainAuth =  createStackNavigator(
 {
   AuthLoading : AuthScreen,
-  Auth : register,
-  App : MainScreen,
+  Auth : { 
+    screen : register ,
+    navigationOptions: {
+      header: null, // Will hide header for HomePage
+      gesturesEnabled: false,
+  }
+},
+  App : { 
+          screen : stackN ,
+          navigationOptions: {
+            header: null, // Will hide header for HomePage
+            gesturesEnabled: false,
+        }
+   },
 },{
   initialRouteName : 'AuthLoading'
 }
